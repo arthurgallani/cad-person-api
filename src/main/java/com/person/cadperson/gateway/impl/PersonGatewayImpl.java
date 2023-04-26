@@ -33,14 +33,14 @@ public class PersonGatewayImpl implements PersonGateway {
     @Override
     public Person get(Integer idPerson) {
 
-        var transactionEntity = personRepository
+        var personEntity = personRepository
                 .findById(idPerson)
                 .orElse(null);
 
-        if (null == transactionEntity)
+        if (null == personEntity)
             throw new NotFoundException("Person not found by id: " + idPerson );
 
-        return personConverter.convert(transactionEntity);
+        return personConverter.convert(personEntity);
 
     }
 }

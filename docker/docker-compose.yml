@@ -1,0 +1,11 @@
+version: '3.8'
+volumes:
+  cad-person-api-data:
+networks:
+  vpcbr:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.5.0.0/16
+          gateway: 10.5.0.1
+  cad-person-api-net:
