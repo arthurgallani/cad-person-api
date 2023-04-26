@@ -3,9 +3,11 @@ package com.person.cadperson.host.converter.impl;
 import com.person.cadperson.domain.Person;
 import com.person.cadperson.host.converter.PersonResponseConverter;
 import com.person.cadperson.host.data.PersonResponse;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component
 public class PersonResponseConverterImpl implements PersonResponseConverter {
 
 

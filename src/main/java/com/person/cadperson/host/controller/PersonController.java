@@ -19,5 +19,4 @@ import java.util.List;
 @RequestMapping("persons")
 public class PersonController {
 
-   
 }

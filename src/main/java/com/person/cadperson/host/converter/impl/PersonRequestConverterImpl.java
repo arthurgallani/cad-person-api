@@ -3,7 +3,9 @@ package com.person.cadperson.host.converter.impl;
 import com.person.cadperson.domain.Person;
 import com.person.cadperson.host.converter.PersonRequestConverter;
 import com.person.cadperson.host.data.PersonRequest;
+import org.springframework.stereotype.Component;
 
+@Component
 public class PersonRequestConverterImpl implements PersonRequestConverter {
 
     @Override
