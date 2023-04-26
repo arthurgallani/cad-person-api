@@ -6,6 +6,9 @@ import com.person.cadperson.host.converter.PersonRequestConverter;
 import com.person.cadperson.host.converter.PersonResponseConverter;
 import com.person.cadperson.host.data.PersonRequest;
 import com.person.cadperson.host.data.PersonResponse;
+import com.person.cadperson.useCase.CreatePersonCase;
+import com.person.cadperson.useCase.GetAllPersonCase;
+import com.person.cadperson.useCase.GetByIdPersonCase;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,4 +24,61 @@ import java.util.List;
 @RequestMapping("persons")
 public class PersonController {
 
+    @Autowired
+    private CreatePersonCase createPersonCase;
+
+    @Autowired
+    private GetAllPersonCase getAllPersonCase;
+
+    @Autowired
+    private GetByIdPersonCase getByIdPersonCase;
+
+    @Autowired
+    private PersonRequestConverter personRequestConverter;
+
+    @Autowired
+    private PersonResponseConverter personResponseConverter;
+
+    @CrossOrigin
+    @PostMapping
+    public ResponseEntity<PersonResponse> create(@Valid @RequestBody PersonRequest personRequest) {
+        var personResponse = personResponseConverter.convert(
+                createPersonCase.execute(personRequestConverter.convert(personRequest)));
+        var uri = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(personResponse.getId())
+                .toUri();
+        return ResponseEntity.created(uri).body(personResponse);
+    }
+
+    @CrossOrigin
+    @GetMapping
+    public ResponseEntity<List<PersonResponse>> find() {
+        return ResponseEntity.ok(
+                personResponseConverter.convert(getAllPersonCase.execute()));
+    }
+
+    @CrossOrigin
+    @GetMapping("/{id}")
+    public ResponseEntity<PersonResponse> findById(@PathVariable(name = "id") Integer id) {
+        return ResponseEntity.ok(
+                personResponseConverter.convert(getByIdPersonCase.execute(id)));
+    }
+
+
+    @ExceptionHandler({ Exception.class, RuntimeException.class })
+    public void handleExceptionInternal() {
+        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal error");
+    }
+
+    @ExceptionHandler({ BadRequestException.class })
+    public void handleExceptionBadRequest() {
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid request");
+    }
+
+    @ExceptionHandler({ NotFoundException.class })
+    public void handleExceptionNotFound() {
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found");
+    }
 }
