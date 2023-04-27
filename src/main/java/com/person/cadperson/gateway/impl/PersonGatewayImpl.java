@@ -43,4 +43,9 @@ public class PersonGatewayImpl implements PersonGateway {
         return personConverter.convert(personEntity);
 
     }
+
+    @Override
+    public void delete(Integer idPerson) {
+        personRepository.deleteById(idPerson);
+    }
 }

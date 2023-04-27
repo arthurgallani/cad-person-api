@@ -7,6 +7,7 @@ import com.person.cadperson.host.converter.PersonResponseConverter;
 import com.person.cadperson.host.data.PersonRequest;
 import com.person.cadperson.host.data.PersonResponse;
 import com.person.cadperson.useCase.CreatePersonCase;
+import com.person.cadperson.useCase.DeleteByIdPersonCase;
 import com.person.cadperson.useCase.GetAllPersonCase;
 import com.person.cadperson.useCase.GetByIdPersonCase;
 import jakarta.validation.Valid;
@@ -31,6 +32,9 @@ public class PersonController {
     private GetAllPersonCase getAllPersonCase;
 
     @Autowired
+    private DeleteByIdPersonCase deleteByIdPersonCase;
+
+    @Autowired
     private GetByIdPersonCase getByIdPersonCase;
 
     @Autowired
@@ -41,7 +45,7 @@ public class PersonController {
 
     @CrossOrigin
     @PostMapping
-    public ResponseEntity<PersonResponse> create(@Valid @RequestBody PersonRequest personRequest) {
+    public ResponseEntity<PersonResponse> save(@Valid @RequestBody PersonRequest personRequest) {
         var personResponse = personResponseConverter.convert(
                 createPersonCase.execute(personRequestConverter.convert(personRequest)));
         var uri = ServletUriComponentsBuilder
@@ -66,6 +70,14 @@ public class PersonController {
                 personResponseConverter.convert(getByIdPersonCase.execute(id)));
     }
 
+    @CrossOrigin
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteById(@PathVariable(name = "id") Integer id) {
+        deleteByIdPersonCase.execute(id);
+        return ResponseEntity
+                .noContent()
+                .build();
+    }
 
     @ExceptionHandler({ Exception.class, RuntimeException.class })
     public void handleExceptionInternal() {

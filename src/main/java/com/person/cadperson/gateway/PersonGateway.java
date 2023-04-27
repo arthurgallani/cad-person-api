@@ -11,4 +11,6 @@ public interface PersonGateway {
     List<Person> getAll();
 
     Person get(Integer idPerson);
+
+    void delete(Integer idPerson);
 }
